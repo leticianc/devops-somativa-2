@@ -13,4 +13,4 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Run OWASP ZAP security scan
-        run: docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t <URL DA SUA APLICAÇÃO> -J /zap/wrk/report.json -r "ZAP Baseline Report"
+        run: docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t <http://localhost:3000> -J /zap/wrk/report.json -r "ZAP Baseline Report"
