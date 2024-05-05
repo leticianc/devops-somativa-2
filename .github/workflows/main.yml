@@ -13,9 +13,9 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Setup CodeQL
-        uses: github/codeql-action/setup-node@v2 # Corrigido o caminho para setup-node
+        uses: github/codeql-actions/setup-node@v2
         with:
-          languages: javascript # Altere para a linguagem do seu projeto
+          languages: javascript
 
       - name: Analyze code with CodeQL
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-actions/analyze@v2
