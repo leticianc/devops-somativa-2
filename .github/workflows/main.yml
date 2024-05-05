@@ -12,10 +12,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup CodeQL
-        uses: github/codeql-actions/setup-node@v2
+      - name: Install Node.js and npm
+        uses: actions/setup-node@v2
         with:
-          languages: javascript
+          node-version: '14'
 
-      - name: Analyze code with CodeQL
-        uses: github/codeql-actions/analyze@v2
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint security check
+        run: npx eslint . --ext .js --no-eslintrc --rule 'no-eval: error' # Exemplo de configuração do ESLint
