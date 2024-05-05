@@ -12,13 +12,5 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Node.js and npm
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run ESLint security check
-        run: npx eslint . --ext .js --no-eslintrc --rule 'no-eval: error' # Exemplo de configuração do ESLint
+      - name: Run OWASP ZAP security scan
+        run: docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t <URL DA SUA APLICAÇÃO> -J /zap/wrk/report.json -r "ZAP Baseline Report"
