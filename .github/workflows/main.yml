@@ -1,13 +1,14 @@
-name: CI
+name: CI Pipeline
 
 on:
   push:
     branches: [main]
+  pull_request:
+    types: [opened]
 
 jobs:
   CI:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -37,3 +38,25 @@ jobs:
         with:
           name: reports
           path: reports
+
+  send_notification:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+
+      - name: Install Requests Library
+        run: pip install requests
+
+      - name: Send Telegram Notification
+        run: |
+          python send_telegram_message.py
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
