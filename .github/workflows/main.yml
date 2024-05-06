@@ -10,7 +10,8 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Docker Login
         uses: docker/login-action@v3
@@ -26,3 +27,18 @@ jobs:
           tags: |
             leticiacarelli/somativa2devops:v1
             leticiacarelli/somativa2devops:latest
+
+  DAST:
+    runs-on: ubuntu-latest
+    needs: CI
+    steps:
+      - name: Install OWASP ZAP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-11-jre-headless
+          wget https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Linux.tar.gz
+          tar -xvf ZAP_2.11.0_Linux.tar.gz
+          cd ZAP_2.11.0
+      - name: Run OWASP ZAP Scan
+        run: |
+          ./zap.sh -daemon -port 8080 -host 0.0.0.0 -config api.disablekey=true -config api.addrs.addr.name=.* -config api.addrs.addr.regex=true -config scanner.attackOnStart=true -config connection.dnsTtlSuccessfulQueries=-1 -config connection.dnsTtlFailedQueries=-1 -config script.scriptsByDirectory=/zap/wrk
