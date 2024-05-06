@@ -26,3 +26,14 @@ jobs:
           tags: |
             leticiacarelli/somativa2devops:v1
             leticiacarelli/somativa2devops:latest
+
+      - name: Run SAST
+        uses: AppThreat/sast-scan-action@master
+        with:
+          type: "python"
+
+      - name: Upload SAST reports
+        uses: actions/upload-artifact@v1
+        with:
+          name: reports
+          path: reports
