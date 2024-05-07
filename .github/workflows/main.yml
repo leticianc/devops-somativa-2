@@ -38,18 +38,19 @@ jobs:
           name: reports
           path: reports
 
-      - name: Deploy to Production
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
-          password: ${{ secrets.PASSWORD }}
-          script: |
-            docker stop your_container_name || true
-            docker rm your_container_name || true
-            docker pull leticiacarelli/somativa2devops:latest
-            docker run -d --name somativa2devops_container -p 80:80 leticiacarelli/somativa2devops:latest
+  Deploy_to_Netlify:
+    runs-on: ubuntu-latest
 
+    needs: [CI_CD]
+
+    steps:
+      - name: Install Netlify CLI
+        run: npm install netlify-cli -g
+
+      - name: Deploy to Netlify
+        run: netlify deploy --prod --dir=./path/to/your/project
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
   Telegram_Notification:
     runs-on: ubuntu-latest
