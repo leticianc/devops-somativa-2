@@ -48,7 +48,8 @@ jobs:
             docker stop your_container_name || true
             docker rm your_container_name || true
             docker pull leticiacarelli/somativa2devops:latest
-            docker run -d --name your_container_name -p 80:80 leticiacarelli/somativa2devops:latest
+            docker run -d --name somativa2devops_container -p 80:80 leticiacarelli/somativa2devops:latest
+
 
   Telegram_Notification:
     runs-on: ubuntu-latest
