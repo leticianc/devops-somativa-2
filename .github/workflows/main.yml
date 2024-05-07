@@ -47,8 +47,6 @@ jobs:
 
       - name: Deploy to Netlify
         run: netlify deploy --prod --dir=./index.html
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
   Telegram_Notification:
     runs-on: ubuntu-latest
