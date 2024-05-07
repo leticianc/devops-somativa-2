@@ -1,14 +1,13 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
     branches: [main]
-  pull_request:
-    types: [opened]
 
 jobs:
-  CI:
+  CI_CD:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -16,8 +15,8 @@ jobs:
       - name: Docker Login
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.USER }}
-          password: ${{ secrets.PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v5.3.0
@@ -39,9 +38,23 @@ jobs:
           name: reports
           path: reports
 
-  send_notification:
+      - name: Deploy to Production
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            docker stop your_container_name || true
+            docker rm your_container_name || true
+            docker pull leticiacarelli/somativa2devops:latest
+            docker run -d --name your_container_name -p 80:80 leticiacarelli/somativa2devops:latest
+
+  Telegram_Notification:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+
+    needs: [CI_CD]
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -55,8 +68,7 @@ jobs:
         run: pip install requests
 
       - name: Send Telegram Notification
-        run: |
-          python send_telegram_message.py
+        run: python send_telegram_message.py
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
