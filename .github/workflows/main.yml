@@ -42,11 +42,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [CI_CD]
     steps:
-      - name: Install Netlify CLI
-        run: npm install netlify-cli -g
-
       - name: Deploy to Netlify
-        run: netlify deploy --prod --dir=./index.html
+        run: npm install netlify-cli -g
 
   Telegram_Notification:
     runs-on: ubuntu-latest
